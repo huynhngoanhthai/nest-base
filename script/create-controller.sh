@@ -91,6 +91,7 @@ import { ${CAP_NAME}Service } from './${MODULE_NAME}.service';
 import { Create${CAP_NAME}Dto } from './dto/create-${MODULE_NAME}.dto';
 import { Update${CAP_NAME}Dto } from './dto/update-${MODULE_NAME}.dto';
 import { CONFIG } from 'src/config/config';
+import { JWTAuth, UserAuth } from 'src/common/decorators';
 
 @ApiTags('${ROUTE_PATH}')
 @Controller(\`\${CONFIG.API_PREFIX}/${ROUTE_PATH}\`)
@@ -98,10 +99,10 @@ export class ${CAP_NAME}Controller {
   constructor(private readonly ${MODULE_NAME}Service: ${CAP_NAME}Service) {}
 
   @Get()
+  @UserAuth(JWTAuth)
   findAll() {
     return this.${MODULE_NAME}Service.findAll();
   }
-
 }
 EOF
 

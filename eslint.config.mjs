@@ -11,6 +11,8 @@ export default tseslint.config(
       'dist',
       'src/main.ts',
       'src/base/CoreEntity.ts',
+      'src/types/**',
+      'src/common/guards/jwt-auth.guard.ts',
     ],
   },
   eslint.configs.recommended,

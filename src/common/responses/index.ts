@@ -1,33 +1,53 @@
 /**
- * Class bọc Response chuẩn hoá định dạng trả về cho Client.
+ * Lớp ResponseAPI tạo định dạng phản hồi dữ liệu chuẩn cho Client:
+ * { data, message, status }
  *
  * @example
- * return new SuccessResponse(user, 'Lấy thông tin người dùng thành công');
- * return SuccessResponse.ok(user, 'Thành công');
- * return SuccessResponse.created(newUser, 'Tạo mới thành công');
+ * return ResponseAPI.sendOK(data, 'Lấy danh sách thành công');
+ * return ResponseAPI.sendCreated('Tạo mới thành công!', newUser);
+ * return ResponseAPI.sendNotFound('Không tìm thấy dữ liệu');
  */
-export class SuccessResponse<T = any> {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  data: T | null;
-
-  constructor(
-    data: T | null,
-    message: string = 'Success',
-    statusCode: number = 200,
+export class ResponseAPI {
+  static sendAPI<T = any>(
+    data: T | object = {},
+    message: string = '',
+    status: boolean = true,
   ) {
-    this.success = true;
-    this.statusCode = statusCode;
-    this.message = message;
-    this.data = data;
+    return {
+      data,
+      message,
+      status,
+    };
   }
 
-  static ok<T>(data: T, message: string = 'Success') {
-    return new SuccessResponse(data, message, 200);
+  static sendOK<T = any>(data: T | object = {}, message: string = '') {
+    return this.sendAPI(data, message, true);
   }
 
-  static created<T>(data: T, message: string = 'Created successfully') {
-    return new SuccessResponse(data, message, 201);
+  static sendCreated<T = any>(
+    message: string = 'Created successfully!',
+    data: T | object = {},
+  ) {
+    return this.sendAPI(data, message, true);
+  }
+
+  static sendNotFound<T = any>(
+    message: string = 'Not Found',
+    data: T | object = {},
+  ) {
+    return this.sendAPI(data, message, false);
+  }
+}
+
+export class SuccessResponse {
+  static ok<T = any>(data: T | object = {}, message: string = 'Success') {
+    return ResponseAPI.sendOK(data, message);
+  }
+
+  static created<T = any>(
+    data: T | object = {},
+    message: string = 'Created successfully!',
+  ) {
+    return ResponseAPI.sendCreated(message, data);
   }
 }

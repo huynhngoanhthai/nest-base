@@ -36,12 +36,11 @@ mkdir -p "$DIR_PATH/entities"
 
 # 1. Generate Entity
 cat <<EOF > "$DIR_PATH/entities/$MODULE_NAME.entity.ts"
-import { ApiProperty } from '@nestjs/swagger';
-import { BaseEntity } from 'src/base/BaseEntity';
+import { CoreEntity } from 'src/base/CoreEntity';
 import { Entity } from 'typeorm';
 
 @Entity('${MODULE_NAME}s')
-export class ${CAP_NAME} extends BaseEntity {}
+export class ${CAP_NAME} extends CoreEntity {}
 EOF
 
 # 2. Generate Create DTO
@@ -116,6 +115,7 @@ import { ${CAP_NAME}Service } from './${MODULE_NAME}.service';
 import { Create${CAP_NAME}Dto } from './dto/create-${MODULE_NAME}.dto';
 import { Update${CAP_NAME}Dto } from './dto/update-${MODULE_NAME}.dto';
 import { CONFIG } from 'src/config/config';
+import { JWTAuth, UserAuth } from 'src/common/decorators';
 
 @ApiTags('${ROUTE_PATH}')
 @Controller(\`\${CONFIG.API_PREFIX}/${ROUTE_PATH}\`)
@@ -123,21 +123,25 @@ export class ${CAP_NAME}Controller {
   constructor(private readonly ${MODULE_NAME}Service: ${CAP_NAME}Service) {}
 
   @Post()
+  @UserAuth(JWTAuth)
   create(@Body() create${CAP_NAME}Dto: Create${CAP_NAME}Dto) {
     return this.${MODULE_NAME}Service.create(create${CAP_NAME}Dto);
   }
 
   @Get()
+  @UserAuth(JWTAuth)
   findAll() {
     return this.${MODULE_NAME}Service.findAll();
   }
 
   @Get(':id')
+  @UserAuth(JWTAuth)
   findOne(@Param('id') id: string) {
     return this.${MODULE_NAME}Service.findOne(+id);
   }
 
   @Patch(':id')
+  @UserAuth(JWTAuth)
   update(
     @Param('id') id: string,
     @Body() update${CAP_NAME}Dto: Update${CAP_NAME}Dto,
@@ -146,6 +150,7 @@ export class ${CAP_NAME}Controller {
   }
 
   @Delete(':id')
+  @UserAuth(JWTAuth)
   remove(@Param('id') id: string) {
     return this.${MODULE_NAME}Service.remove(+id);
   }
