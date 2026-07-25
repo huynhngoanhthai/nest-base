@@ -3,14 +3,12 @@
 # Exit on error
 set -e
 
-DOCS_NAME=$1
-RAW_INPUT=$2
+RAW_INPUT=$1
 
-
-if [ -z "$DOCS_NAME" -o -z "$RAW_INPUT" ]; then
-  echo "❌ Error: Please provide both docs name and module name!"
-  echo "Usage: ./script/create-CRUD.sh <docs-name> <module-name>"
-  echo "Example: ./script/create-CRUD.sh admin user"
+if [ -z "$RAW_INPUT" ]; then
+  echo "❌ Error: Please provide module name!"
+  echo "Usage: ./script/create-CRUD.sh <module-name>"
+  echo "Example: ./script/create-CRUD.sh user"
   exit 1
 fi
 
@@ -48,7 +46,11 @@ EOF
 
 # 2. Generate Create DTO
 cat <<EOF > "$DIR_PATH/dto/create-$MODULE_NAME.dto.ts"
-export class Create${CAP_NAME}Dto {}
+import { ${CAP_NAME} } from '../entities/${MODULE_NAME}.entity';
+
+export class Create${CAP_NAME}Dto {
+  ${MODULE_NAME}: ${CAP_NAME};
+}
 EOF
 
 # 3. Generate Update DTO
@@ -65,6 +67,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ${CAP_NAME} } from './entities/${MODULE_NAME}.entity';
+import { Create${CAP_NAME}Dto } from './dto/create-${MODULE_NAME}.dto';
+import { Update${CAP_NAME}Dto } from './dto/update-${MODULE_NAME}.dto';
 
 @Injectable()
 export class ${CAP_NAME}Service {
@@ -73,8 +77,8 @@ export class ${CAP_NAME}Service {
     private readonly ${MODULE_NAME}Repository: Repository<${CAP_NAME}>,
   ) {}
 
-  create(${MODULE_NAME}: ${CAP_NAME}) {
-    const item = this.${MODULE_NAME}Repository.create(${MODULE_NAME});
+  create(create${CAP_NAME}Dto: Create${CAP_NAME}Dto) {
+    const item = this.${MODULE_NAME}Repository.create(create${CAP_NAME}Dto as any);
     return this.${MODULE_NAME}Repository.save(item);
   }
 
@@ -86,8 +90,8 @@ export class ${CAP_NAME}Service {
     return this.${MODULE_NAME}Repository.findOne({ where: { id, isDeleted: false } });
   }
 
-  update(id: number, ${MODULE_NAME}: ${CAP_NAME}) {
-    return this.${MODULE_NAME}Repository.update(id, ${MODULE_NAME});
+  update(id: number, update${CAP_NAME}Dto: Update${CAP_NAME}Dto) {
+    return this.${MODULE_NAME}Repository.update(id, update${CAP_NAME}Dto as any);
   }
 
   remove(id: number) {
@@ -109,17 +113,18 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ${CAP_NAME}Service } from './${MODULE_NAME}.service';
-import { ${CAP_NAME} } from './entities/${MODULE_NAME}.entity';
+import { Create${CAP_NAME}Dto } from './dto/create-${MODULE_NAME}.dto';
+import { Update${CAP_NAME}Dto } from './dto/update-${MODULE_NAME}.dto';
 import { CONFIG } from 'src/config/config';
 
-@ApiTags('${DOCS_NAME}')
-@Controller(\`${DOCS_NAME}/\${CONFIG.API_PREFIX}/${ROUTE_PATH}\`)
+@ApiTags('${ROUTE_PATH}')
+@Controller(\`\${CONFIG.API_PREFIX}/${ROUTE_PATH}\`)
 export class ${CAP_NAME}Controller {
   constructor(private readonly ${MODULE_NAME}Service: ${CAP_NAME}Service) {}
 
   @Post()
-  create(@Body('${MODULE_NAME}') ${MODULE_NAME}: ${CAP_NAME}) {
-    return this.${MODULE_NAME}Service.create(${MODULE_NAME});
+  create(@Body() create${CAP_NAME}Dto: Create${CAP_NAME}Dto) {
+    return this.${MODULE_NAME}Service.create(create${CAP_NAME}Dto);
   }
 
   @Get()
@@ -135,9 +140,9 @@ export class ${CAP_NAME}Controller {
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body('${MODULE_NAME}') ${MODULE_NAME}: ${CAP_NAME},
+    @Body() update${CAP_NAME}Dto: Update${CAP_NAME}Dto,
   ) {
-    return this.${MODULE_NAME}Service.update(+id, ${MODULE_NAME});
+    return this.${MODULE_NAME}Service.update(+id, update${CAP_NAME}Dto);
   }
 
   @Delete(':id')

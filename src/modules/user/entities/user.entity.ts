@@ -1,11 +1,14 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { BaseEntity } from 'src/base/BaseEntity';
-import { Entity } from 'typeorm';
-import { Column } from 'typeorm/browser';
+import { CoreEntity } from 'src/base/CoreEntity';
+import { Column, Entity } from 'typeorm';
 
 @Entity('users')
-export class User extends BaseEntity {
+export class User extends CoreEntity {
   @Column({ default: '' })
-  @ApiProperty()
   name: string;
+
+  @Column({ default: '' })
+  email: string;
+
+  @Column({ default: '', select: false })
+  password: string;
 }

@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -10,8 +12,8 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  create(user: User) {
-    const item = this.userRepository.create(user);
+  create(createUserDto: CreateUserDto) {
+    const item = this.userRepository.create(createUserDto as any);
     return this.userRepository.save(item);
   }
 
@@ -23,8 +25,8 @@ export class UserService {
     return this.userRepository.findOne({ where: { id, isDeleted: false } });
   }
 
-  update(id: number, user: User) {
-    return this.userRepository.update(id, user);
+  update(id: number, updateUserDto: UpdateUserDto) {
+    return this.userRepository.update(id, updateUserDto as any);
   }
 
   remove(id: number) {

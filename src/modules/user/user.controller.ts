@@ -9,18 +9,18 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
-import { User } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { CONFIG } from 'src/config/config';
 
-@ApiTags('admin')
-@Controller(`admin/${CONFIG.API_PREFIX}/user`)
+@ApiTags('user')
+@Controller(`${CONFIG.API_PREFIX}/user`)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  create(@Body() body: { user: User }) {
-    const { user } = body;
-    return this.userService.create(user);
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto);
   }
 
   @Get()
@@ -34,8 +34,8 @@ export class UserController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() user: User) {
-    return this.userService.update(+id, user);
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(+id, updateUserDto);
   }
 
   @Delete(':id')

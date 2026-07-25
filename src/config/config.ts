@@ -13,7 +13,7 @@ export const CONFIG = {
   JWT_REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN,
 
   // Bcrypt
-  BCRYPT_SALT_ROUNDS: +process.env.BCRYPT_SALT_ROUNDS!,
+  BCRYPT_SALT_ROUNDS: +(process.env.BCRYPT_SALT_ROUNDS || 10),
 
   // DATABASE
   DATABASE: {

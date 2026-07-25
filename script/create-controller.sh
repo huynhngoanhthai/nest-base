@@ -3,13 +3,12 @@
 # Exit on error
 set -e
 
-DOCS_NAME=$1
-RAW_INPUT=$2
+RAW_INPUT=$1
 
-if [ -z "$DOCS_NAME" -o -z "$RAW_INPUT" ]; then
-  echo "❌ Error: Please provide both docs name and module name!"
-  echo "Usage: ./script/create-controller.sh <docs-name> <module-name>"
-  echo "Example: ./script/create-controller.sh admin user"
+if [ -z "$RAW_INPUT" ]; then
+  echo "❌ Error: Please provide module name!"
+  echo "Usage: ./script/create-controller.sh <module-name>"
+  echo "Example: ./script/create-controller.sh user"
   exit 1
 fi
 
@@ -54,7 +53,7 @@ import { Update${CAP_NAME}Dto } from './dto/update-${MODULE_NAME}.dto';
 
 @Injectable()
 export class ${CAP_NAME}Service {
-  create(${MODULE_NAME}: Create${CAP_NAME}Dto) {
+  create(create${CAP_NAME}Dto: Create${CAP_NAME}Dto) {
     return 'This action adds a new ${MODULE_NAME}';
   }
 
@@ -66,7 +65,7 @@ export class ${CAP_NAME}Service {
     return \`This action returns a #\${id} ${MODULE_NAME}\`;
   }
 
-  update(id: number, ${MODULE_NAME}: Update${CAP_NAME}Dto) {
+  update(id: number, update${CAP_NAME}Dto: Update${CAP_NAME}Dto) {
     return \`This action updates a #\${id} ${MODULE_NAME}\`;
   }
 
@@ -93,38 +92,16 @@ import { Create${CAP_NAME}Dto } from './dto/create-${MODULE_NAME}.dto';
 import { Update${CAP_NAME}Dto } from './dto/update-${MODULE_NAME}.dto';
 import { CONFIG } from 'src/config/config';
 
-@ApiTags('${DOCS_NAME}')
-@Controller(\`${DOCS_NAME}/\${CONFIG.API_PREFIX}/${ROUTE_PATH}\`)
+@ApiTags('${ROUTE_PATH}')
+@Controller(\`\${CONFIG.API_PREFIX}/${ROUTE_PATH}\`)
 export class ${CAP_NAME}Controller {
   constructor(private readonly ${MODULE_NAME}Service: ${CAP_NAME}Service) {}
-
-  @Post()
-  create(@Body('${MODULE_NAME}') ${MODULE_NAME}: Create${CAP_NAME}Dto) {
-    return this.${MODULE_NAME}Service.create(${MODULE_NAME});
-  }
 
   @Get()
   findAll() {
     return this.${MODULE_NAME}Service.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.${MODULE_NAME}Service.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body('${MODULE_NAME}') ${MODULE_NAME}: Update${CAP_NAME}Dto,
-  ) {
-    return this.${MODULE_NAME}Service.update(+id, ${MODULE_NAME});
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.${MODULE_NAME}Service.remove(+id);
-  }
 }
 EOF
 
