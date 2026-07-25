@@ -3,6 +3,7 @@ import { JWT } from 'src/common/utils';
 import { Unauthorized } from 'src/common/exceptions';
 // import { User } from 'src/modules/user/entities/user.entity';
 import { Request } from 'express';
+import { Staff } from 'src/modules/staff/entities/staff.entity';
 
 export interface Payload {
   id: number;
@@ -22,18 +23,18 @@ export class JwtAuthGuard implements CanActivate {
     const token = authHeader.split(' ')[1];
     const payload = JWT.verify<Payload>(token);
 
-    // const user = await User.findOne({
-    //   where: {
-    //     id: payload.id,
-    //     isDeleted: false,
-    //   },
-    // });
+    const staff = await Staff.findOne({
+      where: {
+        id: payload.id,
+        isDeleted: false,
+      },
+    });
 
-    // if (!user) {
-    //   throw new Unauthorized('Không tìm thấy người dùng');
-    // }
+    if (!staff) {
+      throw new Unauthorized('Không tìm thấy người dùng');
+    }
 
-    // request.user = user;
+    request.staff = staff;
 
     return true;
   }

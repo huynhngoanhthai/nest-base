@@ -1,3 +1,5 @@
+import { AuthModule } from './modules/auth/auth.module';
+import { StaffModule } from './modules/staff/staff.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -7,6 +9,8 @@ import { CONFIG } from './config/config';
 
 @Module({
   imports: [
+    AuthModule,
+    StaffModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,

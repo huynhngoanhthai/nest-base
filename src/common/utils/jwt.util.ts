@@ -7,7 +7,10 @@ export class JWT {
    * Tạo JWT Token cực kỳ đơn giản
    * @example const token = JWT.sign({ id: user.id, email: user.email });
    */
-  static sign(payload: object, expiresIn: string = '7d'): string {
+  static sign(
+    payload: object,
+    expiresIn: string = CONFIG.JWT_REFRESH_EXPIRES_IN || '7d',
+  ): string {
     const secret: Secret = CONFIG.JWT_ACCESS_SECRET || 'access_secret_key';
     return jwt.sign(payload, secret, {
       expiresIn: expiresIn as unknown as number,
