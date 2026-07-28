@@ -4,6 +4,9 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { CONFIG } from './config/config';
 import { HandleError } from './common/error/HandleError';
 import { AdminModule } from './modules/admin/admin.module';
+import { CustomerModule } from './modules/customer/customer.module';
+
+class EmptyModule {}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,19 +21,19 @@ async function bootstrap() {
       path: 'docs_admin',
       doc: '1. Docs Admin',
       specVersion: '3.0.1',
-      include: [AdminModule], // Tự động lấy TẤT CẢ module trong AdminModule
+      include: [AdminModule],
     },
     {
       path: 'docs_customer',
       doc: '2. Docs Customer',
       specVersion: '3.0.1',
-      include: [], // Tự động lấy TẤT CẢ module trong CustomerModule
+      include: [CustomerModule],
     },
     {
       path: 'docs_public',
       doc: '3. Docs Public',
       specVersion: '3.0.1',
-      include: [], // Tự động lấy TẤT CẢ module trong PublicModule
+      include: [],
     },
   ];
 
@@ -58,15 +61,16 @@ async function bootstrap() {
       )
       .build();
 
-    // Dùng { include: item.include } để CHỈ hiển thị API của các Module đã chỉ định
+    // Dùng deepScanRoutes: true để tự động quét toàn bộ module con trong AdminModule
+    // Nếu include là mảng rỗng [], gán EmptyModule để không bị lấy nhầm toàn bộ API của hệ thống
     const document = SwaggerModule.createDocument(app, config, {
-      include: item.include,
+      include: item.include.length ? item.include : [EmptyModule],
+      deepScanRoutes: true,
     });
 
     SwaggerModule.setup(item.path, app, document, {
       explorer: true,
       swaggerOptions: {
-        filter: true,
         urls: swaggerUrls,
       },
     });

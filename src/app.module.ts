@@ -1,3 +1,4 @@
+import { CustomerModule } from './modules/customer/customer.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -8,6 +9,7 @@ import { CONFIG } from './config/config';
 
 @Module({
   imports: [
+    CustomerModule,
     AdminModule,
     ConfigModule.forRoot({
       envFilePath: '.env',

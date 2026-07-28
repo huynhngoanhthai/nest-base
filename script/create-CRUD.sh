@@ -85,7 +85,7 @@ export class Update${CAP_NAME}Dto extends PartialType(Create${CAP_NAME}Dto) {
 EOF
 
 # 4. Generate Findall DTO
-cat <<EOF > "$DIR_PATH/dto/findall.dto.ts"
+cat <<EOF > "$DIR_PATH/dto/find-all.dto.ts"
 export class FindallDto {
   search: string;
   page: number;
@@ -99,7 +99,7 @@ import { Injectable } from '@nestjs/common';
 import { ${CAP_NAME} } from './entities/${MODULE_NAME}.entity';
 import { Create${CAP_NAME}Dto } from './dto/create-${MODULE_NAME}.dto';
 import { Update${CAP_NAME}Dto } from './dto/update-${MODULE_NAME}.dto';
-import { FindallDto } from './dto/findall.dto';
+import { FindallDto } from './dto/find-all.dto';
 import { ResponseAPI } from 'src/common/responses';
 
 @Injectable()
@@ -170,7 +170,7 @@ import { Create${CAP_NAME}Dto } from './dto/create-${MODULE_NAME}.dto';
 import { Update${CAP_NAME}Dto } from './dto/update-${MODULE_NAME}.dto';
 import { CONFIG } from 'src/config/config';
 import { JWTAuth, UserAuth } from 'src/common/decorators';
-import { FindallDto } from './dto/findall.dto';
+import { FindallDto } from './dto/find-all.dto';
 
 @ApiTags('${SWAGGER_TAG}')
 @Controller(\`\${CONFIG.API_PREFIX}/${ROUTE_PATH}\`)

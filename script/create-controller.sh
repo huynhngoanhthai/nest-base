@@ -55,7 +55,7 @@ echo "🚀 Generating Controller module '$CAP_NAME' in '$DIR_PATH'..."
 mkdir -p "$DIR_PATH/dto"
 
 # 1. Generate Findall DTO
-cat <<EOF > "$DIR_PATH/dto/findall.dto.ts"
+cat <<EOF > "$DIR_PATH/dto/find-all.dto.ts"
 export class FindallDto {
   search: string;
   page: number;
@@ -66,7 +66,7 @@ EOF
 # 2. Generate Service
 cat <<EOF > "$DIR_PATH/$MODULE_NAME.service.ts"
 import { Injectable } from '@nestjs/common';
-import { FindallDto } from './dto/findall.dto';
+import { FindallDto } from './dto/find-all.dto';
 import { ResponseAPI } from 'src/common/responses';
 
 @Injectable()
@@ -86,7 +86,7 @@ import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ${CAP_NAME}Service } from './${MODULE_NAME}.service';
 import { CONFIG } from 'src/config/config';
 import { JWTAuth, UserAuth } from 'src/common/decorators';
-import { FindallDto } from './dto/findall.dto';
+import { FindallDto } from './dto/find-all.dto';
 
 @ApiTags('${SWAGGER_TAG}')
 @Controller(\`\${CONFIG.API_PREFIX}/${ROUTE_PATH}\`)
