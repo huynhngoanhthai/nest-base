@@ -1,5 +1,5 @@
 import 'express';
-import { Staff } from 'src/modules/staff/entities/staff.entity';
+import { Staff } from 'src/modules/admin/staff/entities/staff.entity';
 
 declare global {
   namespace Express {

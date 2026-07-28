@@ -3,7 +3,7 @@ import { JWT } from 'src/common/utils';
 import { Unauthorized } from 'src/common/exceptions';
 // import { User } from 'src/modules/user/entities/user.entity';
 import { Request } from 'express';
-import { Staff } from 'src/modules/staff/entities/staff.entity';
+import { Staff } from 'src/modules/admin/staff/entities/staff.entity';
 
 export interface Payload {
   id: number;

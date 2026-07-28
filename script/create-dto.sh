@@ -3,24 +3,39 @@
 # Exit on error
 set -e
 
-RAW_MODULE=$1
-RAW_DTO=$2
+ARG1=$1
+ARG2=$2
+ARG3=$3
 
-if [ -z "$RAW_MODULE" ]; then
-  echo "❌ Error: Please provide module name and DTO name!"
-  echo "Usage: ./script/create-dto.sh <module-name> [dto-name]"
-  echo "Example 1: ./script/create-dto.sh user login"
-  echo "Example 2: ./script/create-dto.sh user/filter-user"
+if [ -z "$ARG1" ]; then
+  echo "❌ Error: Please provide parent module, module name, and DTO name!"
+  echo "Usage: ./script/create-dto.sh <parent-module> <module-name> <dto-name>"
+  echo "   or: ./script/create-dto.sh <parent-module>/<module-name> <dto-name>"
+  echo "Example: ./script/create-dto.sh admin user login"
   exit 1
 fi
 
-# If module has a slash (e.g. user/login) and $2 is empty
-if [[ "$RAW_MODULE" == *"/"* ]] && [ -z "$RAW_DTO" ]; then
-  MODULE_PATH=$(dirname "$RAW_MODULE")
-  DTO_INPUT=$(basename "$RAW_MODULE")
+if [ -n "$ARG3" ]; then
+  MODULE_PATH="$ARG1/$ARG2"
+  DTO_INPUT="$ARG3"
+elif [ -n "$ARG2" ]; then
+  if [[ "$ARG1" == *"/"* ]]; then
+    MODULE_PATH="$ARG1"
+    DTO_INPUT="$ARG2"
+  else
+    MODULE_PATH="$ARG1/$ARG2"
+    DTO_INPUT="$ARG2"
+  fi
 else
-  MODULE_PATH="$RAW_MODULE"
-  DTO_INPUT="${RAW_DTO:-$RAW_MODULE}"
+  if [[ "$ARG1" == *"/"* ]]; then
+    MODULE_PATH=$(dirname "$ARG1")
+    DTO_INPUT=$(basename "$ARG1")
+  else
+    echo "❌ Error: Please specify parent module and DTO name!"
+    echo "Usage: ./script/create-dto.sh <parent-module> <module-name> <dto-name>"
+    echo "Example: ./script/create-dto.sh admin user login"
+    exit 1
+  fi
 fi
 
 # Clean module path
@@ -29,6 +44,7 @@ CLEAN_PATH="${CLEAN_PATH#src/}"
 CLEAN_PATH="${CLEAN_PATH#modules/}"
 CLEAN_PATH="${CLEAN_PATH#src/modules/}"
 CLEAN_PATH="${CLEAN_PATH%/}"
+CLEAN_PATH="${CLEAN_PATH#/}"
 
 # Strip .dto suffix if provided
 DTO_NAME="${DTO_INPUT%.dto}"
@@ -56,6 +72,8 @@ mkdir -p "$DIR_PATH"
 
 # Generate DTO file
 cat <<EOF > "$FILE_PATH"
+import { ApiProperty } from '@nestjs/swagger';
+
 export class ${CLASS_NAME} {}
 EOF
 

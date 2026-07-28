@@ -4,11 +4,8 @@ import { Column, Entity } from 'typeorm';
 @Entity('staffs')
 export class Staff extends CoreEntity {
   @Column({ default: '' })
-  name: string;
-
-  @Column({ default: '' })
   username: string;
 
   @Column({ default: '', select: false })
-  password: string;
+  password?: string;
 }
